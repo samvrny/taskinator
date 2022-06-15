@@ -19,15 +19,37 @@ var taskFormHandler = function(event) {
     //this is to reset the form every time it gets clicked THIS WILL BE USED IN THE CHALLENGE TO GENERATE A NEW PAGE EVERY TIME. Things need to be in a form for it to work.
     formEl.reset();
     
-    //package up data an an object
-    var taskDataObj = {
-        name: taskNameInput,
-        type: taskTypeInput
-    };
+    var isEdit = formEl.hasAttribute("data-task-id");
+    
+    //has data attribute, so get task id and call function to complete edit process
+    if (isEdit) {
+        var taskId = formEl.getAttribute("data-task-id");
+        completeEditTask(taskNameInput, taskTypeInput, taskId);
+    }
 
-    //send it as an argument to createTaskEl
+    //no data attribute, so create object as normal and pass to createTaskEl function
+    else {
+        var taskDataObj = {
+            name: taskNameInput,
+            type: taskTypeInput
+        };
+    }
+
     createTaskEl(taskDataObj);
+};// end taskFormHandler function
 
+var completeEditTask = function(taskName, taskType, taskId) {
+    //find the matching task list item THIS IS IMPORTANT. THIS FINDS THE ELEMENT WE WANT TO EDIT!
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    //set new values
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    alert("Task Updated!");
+
+    formEl.removeAttribute("data-task-id");
+    document.querySelector("#save-task").textContent = "Add Task";
 };
 
 var createTaskEl = function(taskDataObj) {
