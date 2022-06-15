@@ -1,6 +1,8 @@
+//the # pound sign before these variable referecnes refers to the ID of an element, not it's class.
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
 var taskIdCounter = 0;
+var pageContentEl = document.querySelector("#page-content");
 
 var taskFormHandler = function(event) { 
     event.preventDefault();
@@ -33,7 +35,7 @@ var createTaskEl = function(taskDataObj) {
       var listItemEl = document.createElement("li");
       listItemEl.className = "task-item";
 
-      //add task id (this is from data-*) as a custom attribute THIS IS WHERE data-task-id IS DEFINED
+      //add task id (this is from data-*) as a custom attribute THIS IS WHERE data-task-id IS DEFINED. THIS IS REFERENCED IN GOOGLE DOCS AS 412
       listItemEl.setAttribute("data-task-id", taskIdCounter);
 
       //create div to hold task info and add to list item
@@ -66,7 +68,7 @@ var createTaskActions = function(taskId) {
     var editButtonEl = document.createElement("button");
     editButtonEl.textContent = "Edit";
     editButtonEl.className = "btn edit-btn";
-    editButtonEl.setAttribute = ("data-task-id", taskId);
+    editButtonEl.setAttribute("data-task-id", taskId);
 
     //make the edit button a child of actionContainerEl div that was just created.
     actionContainerEl.appendChild(editButtonEl);
@@ -75,7 +77,7 @@ var createTaskActions = function(taskId) {
     var deleteButtonEl = document.createElement("button");
     deleteButtonEl.textContent = "Delete";
     deleteButtonEl.className = "btn delete-btn";
-    deleteButtonEl.setAttribute = ("data-task-id", taskId);
+    deleteButtonEl.setAttribute("data-task-id", taskId);
 
     //make the delete button a child of the actionContainerEl div
     actionContainerEl.appendChild(deleteButtonEl);
@@ -104,4 +106,19 @@ var createTaskActions = function(taskId) {
     return actionContainerEl;
 };//end createTaskActions function
 
+var taskButtonHandler = function(event) {
+
+    if (event.target.matches(".delete-btn")) { // this classes name is actually btn delete-btn. Not sure exactly why this all works but it does.
+        //get the elements task id
+        var taskId = event.target.getAttribute("data-task-id");
+        deleteTask(taskId);
+    }
+};
+
+var deleteTask = function(taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']"); //this line is a demonstration of how/where to use double and single quotes and how insane that can be.
+    taskSelected.remove();
+};
+
+pageContentEl.addEventListener("click", taskButtonHandler);
 formEl.addEventListener("submit", taskFormHandler);
