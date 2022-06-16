@@ -1,6 +1,8 @@
 //the # pound sign before these variable referecnes refers to the ID of an element, not it's class.
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
+var tasksInProgressEl = document.querySelector("#tasks-in-progress");
+var tasksCompletedEl = document.querySelector("#tasks-completed");
 var taskIdCounter = 0;
 var pageContentEl = document.querySelector("#page-content");
 
@@ -128,7 +130,7 @@ var createTaskActions = function(taskId) {
     return actionContainerEl;
 };//end createTaskActions function
 
-var taskButtonHandler = function(event) {
+var taskButtonHandler = function(event) { //THIS WILL BE USED TO LISTEN FOR CLICKS IN THE CHALLENGE!
     //get target element from event
     var targetEl = event.target;
 
@@ -151,7 +153,7 @@ var taskButtonHandler = function(event) {
 
 var deleteTask = function(taskId) {
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']"); //this line is a demonstration of how/where to use double and single quotes and how insane that can be.
-    taskSelected.remove();
+    taskSelected.remove(); //This removed the list item from the whole dealeo
 };
 
 var editTask = function(taskId) {
@@ -169,5 +171,27 @@ var editTask = function(taskId) {
     formEl.setAttribute("data-task-id", taskId);
 };
 
-pageContentEl.addEventListener("click", taskButtonHandler);
+var taskStatusChangeHandler = function(event) {
+    //get the task items id
+    var taskId = event.target.getAttribute("data-task-id");
+
+    //get the currently selected options value and convert to lowercase
+    var statusValue = event.target.value.toLowerCase();
+    
+    //find the parent task item element based on the id
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    if (statusValue === "to do") {
+        tasksToDoEl.appendChild(taskSelected);
+    }
+    else if (statusValue === "in progress") {
+        tasksInProgressEl.appendChild(taskSelected);
+    }
+    else if (statusValue === "completed") {
+        tasksCompletedEl.appendChild(taskSelected);
+    }
+};
+
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
+pageContentEl.addEventListener("click", taskButtonHandler); //add your event listeners at the bottom fo the page 
 formEl.addEventListener("submit", taskFormHandler);
