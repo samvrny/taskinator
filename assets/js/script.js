@@ -238,6 +238,57 @@ var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+var loadTasks = function() { //This code is likely to be used to retrieve the data of the high scores for the high score page
+    tasks = localStorage.getItem("tasks");
+    //console.log(tasks);
+    if (!tasks) {
+        var tasks = [];
+        return false;
+    }
+    tasks = JSON.parse(tasks);
+    //console.log(tasks);
+    for (i = 0; i < tasks.length; i++) {
+        //console.log(tasks[i]);
+        tasks[i].id = taskIdCounter;
+        //console.log(tasks[i]);
+
+        var listItemEl = document.createElement("li");
+        listItemEl.className = "task-item";
+        listItemEl.setAttribute("data-task-id", tasks[i].id);
+        //console.log(listItemEl);
+
+        var taskInfoEl = document.createElement("div");
+        taskInfoEl.className = "taskInfo";
+        taskInfoEl.innerHTML = "<h3 class='task-name'>" + tasks[i].name + "</h3><span class = 'task-type'>" + tasks[i].type + "</span>";
+
+        listItemEl.appendChild(taskInfoEl);
+
+        var taskActionsEl = createTaskActions(tasks[i].id);
+
+        listItemEl.appendChild(taskActionsEl);
+        //console.log(listItemEl);
+
+        if (tasks[i].status === "to do") {
+            listItemEl.querySelector("select[name = 'status-change']").selectedIndex = 0;
+            tasksToDoEl.appendChild(listItemEl);
+        }
+        else if (tasks[i].status === "in progress") {
+            listItemEl.querySelector("select[name = 'status-change']").selectedIndex = 1;
+            tasksInProgressEl.appendChild(listItemEl);
+        }
+        else if (tasks[i].status === "completed") {
+            listItemEl.querySelector("select[name = 'status-change']").selectedIndex = 2;
+            tasksCompletedEl.appendChild(listItemEl);
+        }
+
+        taskIdCounter ++;
+        console.log(listItemEl);
+    }
+};
+
+
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
 pageContentEl.addEventListener("click", taskButtonHandler); //add your event listeners at the bottom fo the page 
 formEl.addEventListener("submit", taskFormHandler);
+
+loadTasks();
